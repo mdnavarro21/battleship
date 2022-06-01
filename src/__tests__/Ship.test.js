@@ -1,37 +1,36 @@
 import ShipFactory from "../modules/Ship";
 
-describe('Ship properties initialized correctly', ()=> {
+describe("Ship properties initialized correctly", () => {
   const newShip = ShipFactory(4);
-  test('returns length of battleship = 4', () => {
-    expect(newShip.getLength()).toBe(4);  
+  test("returns length of battleship = 4", () => {
+    expect(newShip.getLength()).toBe(4);
   });
 
-  test('Throw error if no length specified', () => {
-    expect(() => ShipFactory()).toThrow('No length specified');
+  test("Throw error if no length specified", () => {
+    expect(() => ShipFactory()).toThrow("No length specified");
   });
 
-  test('returns null array of length 4 for battleship', () => {
+  test("returns null array of length 4 for battleship", () => {
     expect(newShip.getHits()).toEqual([null, null, null, null]);
-  });  
+  });
 
-  test('isSunk function - expected false', () => {
+  test("isSunk function - expected false", () => {
     expect(newShip.isSunk()).toBeFalsy();
-  })
+  });
 });
 
-
-test('Hit function happy path', () => {
+test("Hit function happy path", () => {
   const newShip = ShipFactory(5);
   newShip.hit(2);
-  expect(newShip.getHits()).toEqual([null,null,'hit',null,null]);
+  expect(newShip.getHits()).toEqual([null, null, "hit", null, null]);
 });
 
-test('Hit function - index out of range', () => {
+test("Hit function - index out of range", () => {
   const newShip = ShipFactory(3);
-  expect(()=> newShip.hit(4)).toThrow('Ship index out of range');
+  expect(() => newShip.hit(4)).toThrow("Ship index out of range");
 });
 
-test('isSunk happy path 1 - ship still afloat after hits; expecting false', () => {
+test("isSunk happy path 1 - ship still afloat after hits; expecting false", () => {
   const newShip = ShipFactory(4);
   for (let i = 0; i < newShip.getLength(); i += 2) {
     newShip.hit(i);
@@ -39,11 +38,10 @@ test('isSunk happy path 1 - ship still afloat after hits; expecting false', () =
   expect(newShip.isSunk()).toBeFalsy();
 });
 
-test('isSunk happy path 2 - ship has sunk', () => {
+test("isSunk happy path 2 - ship has sunk", () => {
   const newShip = ShipFactory(4);
   for (let i = 0; i < newShip.getLength(); i += 1) {
     newShip.hit(i);
   }
   expect(newShip.isSunk()).toBeTruthy();
 });
-
