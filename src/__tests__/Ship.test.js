@@ -2,7 +2,7 @@ import ShipFactory from "../modules/Ship";
 
 describe("Ship properties initialized correctly", () => {
   const newShip = ShipFactory(4);
-  test("returns length of battleship = 4", () => {
+  test("Length set with 4", () => {
     expect(newShip.getLength()).toBe(4);
   });
 
@@ -10,8 +10,17 @@ describe("Ship properties initialized correctly", () => {
     expect(() => ShipFactory()).toThrow("No length specified");
   });
 
-  test("returns null array of length 4 for battleship", () => {
+  test("Hits array set with length 4", () => {
     expect(newShip.getHits()).toEqual([null, null, null, null]);
+  });
+
+  test("Direction set - default vertical", () => {
+    expect(newShip.getDirection()).toEqual('vertical');
+  });
+
+  test("Direction set - horizontal", () => {
+    const newShip2 = ShipFactory(3,'horizontal');
+    expect(newShip2.getDirection()).toEqual('horizontal');
   });
 
   test("isSunk function - expected false", () => {
