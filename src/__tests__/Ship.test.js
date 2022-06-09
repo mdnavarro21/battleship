@@ -23,6 +23,10 @@ describe("Ship properties initialized correctly", () => {
     expect(newShip2.getDirection()).toEqual('horizontal');
   });
 
+  test("Marker set - expecting 'B' for battleship", () => {
+    expect(newShip.getMarker()).toEqual('B');
+  });
+
   test("isSunk function - expected false", () => {
     expect(newShip.isSunk()).toBeFalsy();
   });
