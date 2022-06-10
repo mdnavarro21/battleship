@@ -8,12 +8,11 @@ const ShipFactory = (length, direction = 'vertical') => {
     : length == 3 ? 'Destroyer' 
     : length == 2 ? 'Submarine'
     : 'Patrol Boat';
-  let marker = Array.from(id)[0];
 
   const getHits = () => hits;
   const getLength = () => length;
   const getDirection = () => direction;
-  const getMarker = () => marker;
+  const getID = () => id;
 
   const hit = (index) => {
     if (index >= length || index < 0) {
@@ -26,7 +25,7 @@ const ShipFactory = (length, direction = 'vertical') => {
     return hits.every((tile) => tile == "hit");
   };
 
-  return { getLength, getHits, getDirection, getMarker, hit, isSunk,  };
+  return { getLength, getHits, getDirection, getID, hit, isSunk,  };
 };
 
 export default ShipFactory;
