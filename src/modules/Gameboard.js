@@ -5,8 +5,7 @@ const GameboardFactory = () => {
     const getBoard = () => board;
     const getPlacedShips = () => placedShips;
 
-    const validateCoordinates = (shipObject, xy_coordinates) => {
-        const direction = shipObject.getDirection();
+    const validatePlacement = (shipObject, xy_coordinates, direction) => {
         const shipLength = shipObject.getLength();
         if (direction == 'horizontal') {
             if (xy_coordinates[0] + shipLength > 10) {
@@ -31,28 +30,11 @@ const GameboardFactory = () => {
         return true;
     }
 
-    const placeShip = (shipObject, xy_coordinates) => {
-        /*
-        if (validateCoordinates(shipLength, xy_coordinates, direction)) {
-            if (direction == 'horizontal') {
-                for (let i = 0; i < shipLength; i++) {
-                    board[xy_coordinates[1]][xy_coordinates[0] + i] = shipID;
-                }       
-            } 
-            else {
-                for (let i = 0; i < shipLength; i++) {
-                    board[xy_coordinates[1] + i][xy_coordinates[0]] = shipID;
-                }
-            }
-            return true;            
-        }
-        else {
-            return false;
-        }*/
-        if (validateCoordinates(shipObject, xy_coordinates)) {
+    const placeShip = (shipObject, xy_coordinates, direction) => {
+        if (validatePlacement(shipObject, xy_coordinates, direction)) {
             const shipLength = shipObject.getLength();
             const shipID = shipObject.getID();
-            if (shipObject.getDirection() == 'horizontal') {
+            if (direction == 'horizontal') {
                 for (let i = 0; i < shipLength; i++) {
                     board[xy_coordinates[1]][xy_coordinates[0] + i] = shipID;
                 }       
@@ -68,9 +50,33 @@ const GameboardFactory = () => {
             return false;
         }
     }
+    const validateAttack = (coordinates) => {
+        const tile = board[coordinates[1]][coordinates[0]];
+        if (tile == 'X' || tile == 'hit') {
+            return false;
+        }
+        return true;
+    }
 
     const receiveAttack = (coordinates) => {
-        board[coordinates[1]][coordinates[0]] = 'x';
+        if (validateAttack(coordinates)) {
+            if (board[coordinates[1]][coordinates[0]] != null) {
+                const shipPart = board[coordinates[1]][coordinates[0]];
+                let attackedShip = placedShips.find((ship) => ship.getID() == shipPart);
+                attackedShip.hit(2);
+                board[coordinates[1]][coordinates[0]] = 'hit';
+            }
+            else {
+                board[coordinates[1]][coordinates[0]] = 'X';
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+
+
+        
     }
     return {getBoard, getPlacedShips ,placeShip, receiveAttack}
 };

@@ -14,15 +14,6 @@ describe("Ship properties initialized correctly", () => {
     expect(newShip.getHits()).toEqual([null, null, null, null]);
   });
 
-  test("Direction set - default vertical", () => {
-    expect(newShip.getDirection()).toEqual('vertical');
-  });
-
-  test("Direction set - horizontal", () => {
-    const newShip2 = ShipFactory(3,'horizontal');
-    expect(newShip2.getDirection()).toEqual('horizontal');
-  });
-
   test("ID set - expecting id battleship", () => {
     expect(newShip.getID()).toEqual('Battleship');
   });

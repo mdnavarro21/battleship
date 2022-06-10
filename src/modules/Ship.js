@@ -1,4 +1,4 @@
-const ShipFactory = (length, direction = 'vertical') => {
+const ShipFactory = (length) => {
   if (!length) {
     throw new Error("No length specified");
   }
@@ -11,7 +11,6 @@ const ShipFactory = (length, direction = 'vertical') => {
 
   const getHits = () => hits;
   const getLength = () => length;
-  const getDirection = () => direction;
   const getID = () => id;
 
   const hit = (index) => {
@@ -25,7 +24,7 @@ const ShipFactory = (length, direction = 'vertical') => {
     return hits.every((tile) => tile == "hit");
   };
 
-  return { getLength, getHits, getDirection, getID, hit, isSunk,  };
+  return { getLength, getHits, getID, hit, isSunk,  };
 };
 
 export default ShipFactory;
