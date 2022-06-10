@@ -24,32 +24,49 @@ describe('Empty board initialized correctly', () => {
 describe('placeShip function', () => {
     test('Happy Path 1: horizontal placement', () => {
         let gameBoard = GameboardFactory();
-        let mockShipLength = 5;
-        gameBoard.placeShip(mockShipLength, [2,0], 'horizontal');
-        expect(gameBoard.getBoard()[0]).toEqual([null,null,'o','o','o','o', 'o', null, null,null])
+        const mockShip = {length: 5, direction: 'horizontal', id: 'Carrier'};
+        expect(gameBoard.placeShip(mockShip['length'],mockShip['id'], [2,0], mockShip['direction'])).toBeTruthy();
+        expect(gameBoard.getBoard()[0]).toEqual([null,null,'Carrier','Carrier','Carrier','Carrier', 'Carrier', null, null,null])
     })
     
     test('Happy Path 2: vertical placement', () => {
         let gameBoard = GameboardFactory();
-        gameBoard.placeShip(5, [0,2], 'vertical');
+        const mockShip = {length: 3, direction: 'vertical', id: 'Destroyer'};
+        expect(gameBoard.placeShip(mockShip.length, mockShip.id, [0,2], mockShip.direction)).toBeTruthy();
         let boardColumn = gameBoard.getBoard().map((row) => row[0]);
-        expect(boardColumn).toEqual([null,null,'o','o','o','o','o',null,null, null])
+        expect(boardColumn).toEqual([null,null,'Destroyer','Destroyer','Destroyer',null,null,null,null, null])
     })
 
     test('Coordinates out of range/overflow out of board', () => {
         let gameBoard = GameboardFactory();
-        expect(() => gameBoard.placeShip(5, [0,8], 'vertical')).toThrow(Error);
+        expect(gameBoard.placeShip(5, 'Carrier', [0,8], 'vertical')).toBeFalsy();
     });
 
     test('Invalid coordinates - another ship is in the way!', () => {
         let gameBoard = GameboardFactory();
-        gameBoard.placeShip(5, [5,5], 'vertical');
-        expect(() => gameBoard.placeShip(4, [3,5], 'horizontal')).toThrow("Invalid Coordinates - another ship is in the way!");
+        const mockShip1 = {length: 5, direction: 'vertical', id: 'Carrier'};
+        const mockShip2 = {length: 4, direction: 'horizontal', id: 'Battleship'};
+        expect(gameBoard.placeShip(mockShip1.length, mockShip1.id, [4,5], mockShip1.direction)).toBeTruthy();
+        expect(gameBoard.placeShip(mockShip2.length, mockShip2.id, [2,5], mockShip2.direction)).toBeFalsy();
+        expect(gameBoard.getBoard()[5]).toEqual([null,null,null,null,'Carrier',null,null,null,null,null]);
+    });
+
+    test('Invalid coordinates 2- two ships are in the way!', () => {
+        let gameBoard = GameboardFactory();
+        gameBoard.placeShip(4,'Battleship',[3,0],'vertical');
+        gameBoard.placeShip(3,'Destroyer',[4,0],'vertical');
+        expect(gameBoard.placeShip(5, 'Carrier', [0,0],'horizontal')).toBeFalsy();
+        expect(gameBoard.getBoard()[0]).toEqual([null,null,null,'Battleship','Destroyer',null,null,null,null,null]);
     });
 
 });
 
 describe('receiveAttack function', () => {
-
+    test('Happy path', () => {   
+        let gameBoard = GameboardFactory();
+        const coordinates = [5,4];
+        gameBoard.receiveAttack(coordinates);
+        expect(gameBoard.getBoard()[coordinates[1]][coordinates[0]]).toBe('x');
+    })
 })
 
