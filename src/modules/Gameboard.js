@@ -58,21 +58,14 @@ const GameboardFactory = () => {
         return true;
     }
 
-    const findHitIndex = (data, coordinates) => {
-        if (data.direction == 'horizontal') {
-            return coordinates[0] - data.start_coordinates[0];
-        }
-        else {
-            return coordinates[1] - data.start_coordinates[1];
-        }
-    }
-
     const receiveAttack = (coordinates) => {
         if (validateAttack(coordinates)) {
             if (board[coordinates[1]][coordinates[0]] != null) {
                 const shipPart = board[coordinates[1]][coordinates[0]];
                 let shipPlacementData = placedShips.find((data) => data.ship.getID() == shipPart);
-                const hitIndex = findHitIndex(shipPlacementData, coordinates);
+                const hitIndex = shipPlacementData.direction == 'horizontal' ? 
+                coordinates[0] - shipPlacementData.start_coordinates[0] 
+                : coordinates[1] - shipPlacementData.start_coordinates[1];
                 shipPlacementData.ship.hit(hitIndex);
                 board[coordinates[1]][coordinates[0]] = 'hit';
             }
