@@ -28,27 +28,32 @@ describe('placeShip function', () => {
     const mockShip2 = ShipFactory(3);
     const mockShip3 = ShipFactory(4);
     const mockShip4 = ShipFactory(2);
-
+    const mockShip1_placed = {ship: mockShip1, start_coordinates: [2,0], direction: 'horizontal'};
+    const mockShip2_placed = {ship: mockShip2, start_coordinates: [0,2], direction: 'vertical'};
+    const mockShip3_placed = {ship: mockShip3, start_coordinates: [2,5], direction: 'vertical'};
     test('Happy Path 1: horizontal placement', () => {
         expect(gameBoard.placeShip(mockShip1, [2,0], 'horizontal')).toBeTruthy();
-        expect(gameBoard.getPlacedShips()).toEqual([mockShip1]);
+
+        expect(gameBoard.getPlacedShips()).toEqual([mockShip1_placed]);
         expect(gameBoard.getBoard()[0]).toEqual([null,null,'Carrier','Carrier','Carrier','Carrier', 'Carrier', null, null,null])
     })
     
     test('Happy Path 2: vertical placement', () => {
         expect(gameBoard.placeShip(mockShip2, [0,2], 'vertical')).toBeTruthy();
-        expect(gameBoard.getPlacedShips()).toEqual([mockShip1, mockShip2]);
+        expect(gameBoard.getPlacedShips()).toEqual([mockShip1_placed, mockShip2_placed]);
         let boardColumn = gameBoard.getBoard().map((row) => row[0]);
         expect(boardColumn).toEqual([null,null,'Destroyer','Destroyer','Destroyer',null,null,null,null, null])
     })
 
     test('Coordinates out of range/overflow out of board', () => {
         expect(gameBoard.placeShip(mockShip3, [0,8], 'vertical')).toBeFalsy();
+        expect(gameBoard.getPlacedShips()).toEqual([mockShip1_placed, mockShip2_placed]);
     });
 
     test('Invalid coordinates - another ship is in the way!', () => {
         expect(gameBoard.placeShip(mockShip3, [2,5], 'vertical')).toBeTruthy();
         expect(gameBoard.placeShip(mockShip4, [1,5], 'horizontal')).toBeFalsy();
+        expect(gameBoard.getPlacedShips()).toEqual([mockShip1_placed, mockShip2_placed, mockShip3_placed]);
         expect(gameBoard.getBoard()[5]).toEqual([null,null,'Battleship',null,null,null,null,null,null,null]);
     });
 
@@ -68,10 +73,10 @@ describe('receiveAttack function', () => {
     });
 
     test('Happy path 2: Attack hits ship', () => {
-        gameBoard.receiveAttack([7,0]);
-        expect(gameBoard.getBoard()[0][7]).toBe('hit');
-        expect(gameBoard.getBoard()[0]).toEqual(['Battleship',null,null,null,null,'Carrier','Carrier','hit','Carrier','Carrier'])
-        expect(ship2.getHits()).toEqual([null,null,'hit',null,null])
+        gameBoard.receiveAttack([9,0]);
+        expect(gameBoard.getBoard()[0][9]).toBe('hit');
+        expect(gameBoard.getBoard()[0]).toEqual(['Battleship',null,null,null,null,'Carrier','Carrier','Carrier','Carrier','hit'])
+        expect(ship2.getHits()).toEqual([null,null,null,null,'hit'])
     });
 
     test('Invalid Coordinates: tile already attacked', () => {
@@ -80,8 +85,35 @@ describe('receiveAttack function', () => {
     });
 
     test('Invalid Coordinates 2: ship already attacked', () => {
-        expect(gameBoard.receiveAttack([7,0])).toBeFalsy();
-        expect(gameBoard.getBoard()[0][7]).toBe('hit');
+        expect(gameBoard.receiveAttack([9,0])).toBeFalsy();
+        expect(gameBoard.getBoard()[0][9]).toBe('hit');
     });
 })
 
+describe.only('allShipsSunk function', () => {
+    let gameBoard = GameboardFactory();
+    gameBoard.placeShip(ShipFactory(3), [0,0], 'vertical');
+    gameBoard.placeShip(ShipFactory(2), [0,8], 'horizontal');
+    gameBoard.placeShip(ShipFactory(1), [2,0], 'horizontal');
+    
+    test('No ships sunk - expecting false', () => {
+        expect(gameBoard.allShipsSunk()).toBeFalsy();
+    });
+
+    test('One ship sunk - expecting false', () => {
+        gameBoard.receiveAttack([0,0]);
+        gameBoard.receiveAttack([0,1]);
+        gameBoard.receiveAttack([0,2]);
+        expect(gameBoard.getPlacedShips()[0].ship.isSunk()).toBeTruthy();
+        expect(gameBoard.allShipsSunk()).toBeFalsy();
+    });
+
+    test('All ships sunk - expecting true', () => {
+        gameBoard.receiveAttack([0,8]);
+        gameBoard.receiveAttack([1,8]);
+
+        gameBoard.receiveAttack([2,0]);
+        console.log(gameBoard.getBoard());
+        expect(gameBoard.allShipsSunk()).toBeTruthy();
+    })
+})

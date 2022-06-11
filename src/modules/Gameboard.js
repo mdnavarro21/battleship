@@ -44,7 +44,7 @@ const GameboardFactory = () => {
                     board[xy_coordinates[1] + i][xy_coordinates[0]] = shipID;
                 }
             }
-            placedShips.push(shipObject);
+            placedShips.push({ship: shipObject, start_coordinates: xy_coordinates, direction});
             return true;
         } else {
             return false;
@@ -58,12 +58,22 @@ const GameboardFactory = () => {
         return true;
     }
 
+    const findHitIndex = (data, coordinates) => {
+        if (data.direction == 'horizontal') {
+            return coordinates[0] - data.start_coordinates[0];
+        }
+        else {
+            return coordinates[1] - data.start_coordinates[1];
+        }
+    }
+
     const receiveAttack = (coordinates) => {
         if (validateAttack(coordinates)) {
             if (board[coordinates[1]][coordinates[0]] != null) {
                 const shipPart = board[coordinates[1]][coordinates[0]];
-                let attackedShip = placedShips.find((ship) => ship.getID() == shipPart);
-                attackedShip.hit(2);
+                let shipPlacementData = placedShips.find((data) => data.ship.getID() == shipPart);
+                const hitIndex = findHitIndex(shipPlacementData, coordinates);
+                shipPlacementData.ship.hit(hitIndex);
                 board[coordinates[1]][coordinates[0]] = 'hit';
             }
             else {
@@ -74,11 +84,14 @@ const GameboardFactory = () => {
         else {
             return false;
         }
-
-
-        
     }
-    return {getBoard, getPlacedShips ,placeShip, receiveAttack}
+
+    const allShipsSunk = () => {
+        return placedShips.every((placedShip) => {
+            return placedShip.ship.isSunk();
+        })
+    }
+    return {getBoard, getPlacedShips ,placeShip, receiveAttack, allShipsSunk}
 };
 
 export default GameboardFactory;
