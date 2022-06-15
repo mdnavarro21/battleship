@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+}
+
+section {
+    height: 100vh;
+    width: 50vw;
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.gameboard{
+    border-style: solid;
+    width: 90%;
+    height: 90%;
+
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: repeat(10, 1fr);
+
+
+}
+
+.gameboard-container {
+    border-style: solid;
+    width: 100%;
+    height: 100%;
+    
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tile {
+    border-style: solid;
+}
