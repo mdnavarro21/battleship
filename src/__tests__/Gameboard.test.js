@@ -90,7 +90,7 @@ describe('receiveAttack function', () => {
     });
 })
 
-describe.only('allShipsSunk function', () => {
+describe('allShipsSunk function', () => {
     let gameBoard = GameboardFactory();
     gameBoard.placeShip(ShipFactory(3), [0,0], 'vertical');
     gameBoard.placeShip(ShipFactory(2), [0,8], 'horizontal');
