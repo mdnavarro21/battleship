@@ -15,7 +15,7 @@ describe("Ship properties initialized correctly", () => {
   });
 
   test("ID set - expecting id battleship", () => {
-    expect(newShip.getID()).toEqual('Battleship');
+    expect(newShip.getID()).toEqual("Battleship");
   });
 
   test("isSunk function - expected false", () => {
